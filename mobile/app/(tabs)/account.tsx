@@ -120,30 +120,6 @@ function Account() {
       </Link>
 
       {/* Settings Options */}
-      <TouchableOpacity style={styles.row}>
-        <Ionicons
-          name="list-circle-outline"
-          size={24}
-          color={themeColors.text}
-        />
-        <Text style={[styles.rowText, { color: themeColors.text }]}>
-          My Listings
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.row]}
-        onPress={() => router.navigate("/(modals)/messagelist")}
-      >
-        <Ionicons
-          name="chatbubble-ellipses-outline"
-          size={24}
-          color={themeColors.text}
-        />
-        <Text style={[styles.rowText, { color: themeColors.text }]}>
-          My Messages
-        </Text>
-      </TouchableOpacity>
 
       <View style={styles.row}>
         <Ionicons
@@ -230,49 +206,6 @@ function Account() {
           Logout
         </Text>
       </TouchableOpacity>
-      <View
-        style={{
-          flex: 1,
-          marginTop: 20,
-          justifyContent: "flex-end",
-          alignItems: "flex-end",
-        }}
-      >
-        <Link
-          href="https://github.com/David-mwas/sellify"
-          style={{
-            color: "#333",
-            textAlign: "center",
-            textDecorationLine: "underline",
-            textDecorationStyle: "solid",
-            textDecorationColor: "#555",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              color: "#555",
-              textAlign: "center",
-            }}
-          >
-            <Ionicons name="logo-github" size={20} color="#555" /> version: v
-            {appVersion}
-          </Text>
-        </Link>
-
-        <Text
-          style={{
-            fontSize: 18,
-            color: "#555",
-            textAlign: "center",
-            textDecorationLine: "underline",
-            textDecorationStyle: "solid",
-            textDecorationColor: "#555",
-          }}
-        >
-          <Link href="https://david-mwas.me"> Created by: DavidMwas</Link>
-        </Text>
-      </View>
     </View>
   );
 }

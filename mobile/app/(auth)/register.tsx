@@ -36,7 +36,7 @@ export default function register() {
   const [modalMessage, setModalMessage] = useState("");
 
   const { location, errorMsg } = useLocation();
-  const { pushToken, errorMsg: error } = usePushNotificationToken();
+  // const { pushToken, errorMsg: error } = usePushNotificationToken();
 
   // Get AuthContext and check if it's defined
   const authContext = useContext(AuthContext);
@@ -53,9 +53,9 @@ export default function register() {
     latitude: location?.coords.latitude ?? 0,
     longitude: location?.coords.longitude ?? 0,
   };
-  if (error || errorMsg) {
-    Alert.alert("Error", error ?? errorMsg ?? "Unknown error");
-  }
+  // if (error || errorMsg) {
+  //   Alert.alert("Error", error ?? errorMsg ?? "Unknown error");
+  // }
   if (errorMsg) {
     Alert.alert("Error", errorMsg);
   }
@@ -103,7 +103,7 @@ export default function register() {
       password,
       confirmPassword,
       LocationObject,
-      pushToken!
+      // pushToken!
     );
   };
 
@@ -142,12 +142,12 @@ export default function register() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View className="gap-4">
             <Image
-              source={require("../../assets/images/selify.png")}
+              source={require("../../assets/images/logo.png")}
               style={{
-                width: 200,
+                width: 300,
                 height: 100,
                 alignSelf: "center",
-                resizeMode: "contain",
+                resizeMode: "cover",
                 // backgroundColor: "red",
                 top: 2,
               }}
@@ -256,7 +256,7 @@ export default function register() {
             {/* Register button */}
             <View className="w-full flex flex-row justify-center items-center ">
               <TouchableOpacity
-                className="bg-[#c58343cc] rounded-lg w-full px-4 py-4"
+                className="bg-[#2ecc40] rounded-lg w-full px-4 py-4"
                 onPress={handleSubmit}
               >
                 <Text className="text-white text-center font-bold">
@@ -308,7 +308,7 @@ export default function register() {
           <TouchableOpacity
             onPress={() => setIsModalVisible(false)}
             style={{
-              backgroundColor: "#c58343cc",
+              backgroundColor: "#2ecc40",
               padding: 10,
               marginTop: 20,
               borderRadius: 5,

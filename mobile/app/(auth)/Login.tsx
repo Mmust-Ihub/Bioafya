@@ -81,11 +81,30 @@ export default function Login() {
   }
 
   return (
-    <SafeAreaView style={{ backgroundColor }} className="flex-1">
+    <SafeAreaView
+      style={{ backgroundColor, position: "relative" }}
+      className="flex-1 relative"
+    >
       <StatusBar style={isDarkMode ? "light" : "dark"} />
+      <View>
+        {/* wave like header */}
+        <View
+          style={{
+            backgroundColor: Colors.light.tint,
+            height: 100,
+            borderBottomLeftRadius: 50,
+            borderBottomRightRadius: 50,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 0,
+          }}
+        />
+      </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex justify-center items-center h-screen px-4 space-y-6 w-screen"
+        className="flex justify-center items-center h-screen px-4 space-y-6 w-screen z-50"
         enabled
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -93,11 +112,10 @@ export default function Login() {
             <Image
               source={require("../../assets/images/logo.png")}
               style={{
-                width: 200,
+                width: 300,
                 height: 100,
                 alignSelf: "center",
-                resizeMode: "contain",
-                // backgroundColor: "red",
+                resizeMode: "cover",
                 top: 2,
               }}
             />
@@ -165,7 +183,7 @@ export default function Login() {
             {/* Login button */}
             <View className="w-full flex flex-row justify-center items-center ">
               <TouchableOpacity
-                className="bg-[#c58343cc] rounded-lg w-full px-4 py-4"
+                className="bg-[#2ecc40] rounded-lg w-full px-4 py-4"
                 onPress={handleLogin}
               >
                 <Text className="text-white text-center font-bold">Login</Text>
@@ -215,7 +233,7 @@ export default function Login() {
           <TouchableOpacity
             onPress={() => setIsModalVisible(false)}
             style={{
-              backgroundColor: "#c58343cc",
+              backgroundColor: "#2ecc40",
               padding: 10,
               marginTop: 20,
               borderRadius: 5,
@@ -233,6 +251,22 @@ export default function Login() {
           </TouchableOpacity>
         </View>
       </Modal>
+      <View>
+        {/* wave like header */}
+        <View
+          style={{
+            backgroundColor: Colors.light.tint,
+            height: 100,
+            borderTopLeftRadius: 50,
+            borderTopRightRadius: 50,
+            position: "absolute",
+            bottom: -100,
+            left: 0,
+            right: 0,
+            zIndex: 0,
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 }

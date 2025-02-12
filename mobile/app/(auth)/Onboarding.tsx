@@ -40,7 +40,7 @@ const OnBoarding = () => {
         onDone={handleComplete}
         pages={[
           {
-            backgroundColor: "rgba(197, 131, 67, 0.8)",
+            backgroundColor: "rgba(246,204,244,0.1)",
             image: (
               <Image
                 source={require("../../assets/images/download.jpg")}
@@ -48,14 +48,14 @@ const OnBoarding = () => {
                 resizeMode="cover"
               />
             ),
-            title: "Welcome To Selify",
+            title: "Welcome to BioAfya",
             subtitle:
-              "Selify is a marketplace for selling what you don't need anymore",
+              "BioAfya is IoT-based livestock health monitoring system.",
             titleStyles: styles.title1,
             subTitleStyles: styles.subtitle1,
           },
           {
-            backgroundColor: "rgba(243, 243, 243, 0.7)",
+            backgroundColor: "rgba(46,204,64,0.6)",
             image: (
               <Image
                 source={require("../../assets/images/image2.png")}
@@ -63,14 +63,14 @@ const OnBoarding = () => {
                 resizeMode="cover"
               />
             ),
-            title: "Choose what to Sell or Buy",
+            title: "Track vital signs and detect disease ",
             subtitle:
-              "View all products from other users and choose what you like or sell your own products",
+              " Use wearable sensors to track vital signs and detect disease early.",
             titleStyles: styles.title2,
             subTitleStyles: styles.subtitle2,
           },
           {
-            backgroundColor: "rgba(197, 131, 67, 0.4)",
+            backgroundColor: "rgba(207, 203, 167, 0.4)",
             image: (
               <Image
                 source={require("../../assets/images/image1.png")}
@@ -78,9 +78,8 @@ const OnBoarding = () => {
                 resizeMode="cover"
               />
             ),
-            title: "Chat with Buyers or Sellers",
-            subtitle:
-              "Send and receive messages between users for negotiations or inquiries in Realtime",
+            title: "AI-driven disease prediction",
+            subtitle: "Alerts  when abnormal patterns are detected",
             titleStyles: styles.title3,
             subTitleStyles: styles.subtitle3,
           },

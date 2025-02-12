@@ -63,10 +63,11 @@ export default function TabLayout() {
     return <OnBoarding />;
     // router.replace("/(auth)/OnBoarding");
   }
-  if (isOnboardingCompleted && !userToken) {
-    return <Login />;
-    // router.replace("/(auth)/Login");
-  }
+  // if (isOnboardingCompleted && !userToken) {
+  //   return <Login />;
+  //   // router.replace("/(auth)/Login");
+
+  // }
 
   return (
     <SafeAreaView style={{ backgroundColor: backgroundColor, flex: 1 }}>
@@ -112,19 +113,15 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="products"
+          name="animal"
           options={{ href: null, headerShown: false }}
         />
         <Tabs.Screen
-          name="add"
+          name="scan"
           options={({ navigation }) => ({
-            title: "Post product",
+            title: "Take a photo",
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="plus-circle"
-                color={color}
-                size={30}
-              />
+              <MaterialCommunityIcons name="camera" color={color} size={30} />
             ),
           })}
         />
