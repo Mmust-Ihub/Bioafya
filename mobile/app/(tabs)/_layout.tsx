@@ -63,11 +63,10 @@ export default function TabLayout() {
     return <OnBoarding />;
     // router.replace("/(auth)/OnBoarding");
   }
-  // if (isOnboardingCompleted && !userToken) {
-  //   return <Login />;
-  //   // router.replace("/(auth)/Login");
-
-  // }
+  if (isOnboardingCompleted && !userToken) {
+    return <Login />;
+    // router.replace("/(auth)/Login");
+  }
 
   return (
     <SafeAreaView style={{ backgroundColor: backgroundColor, flex: 1 }}>

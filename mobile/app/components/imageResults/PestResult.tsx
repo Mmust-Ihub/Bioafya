@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useContext } from "react";
 import Markdown from "react-native-markdown-display";
-import { PestInfo } from "@/constants/Types";
+import { PestInfo } from "@/constants/types";
 import { Colors } from "@/constants/Colors";
 import { ThemeContext } from "@/contexts/ThemeContext"; // Import theme context
 

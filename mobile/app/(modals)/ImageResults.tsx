@@ -16,6 +16,7 @@ import { ThemeContext } from "@/contexts/ThemeContext"; // Import ThemeContext
 import * as FileSystem from "expo-file-system";
 import DiseaseResult from "../components/imageResults/DiseaseResult";
 import PestResult from "../components/imageResults/PestResult";
+import { apiUrl } from "@/constants/api";
 
 export default function ImageResults() {
   const authContext = useContext(AuthContext);
@@ -49,7 +50,7 @@ export default function ImageResults() {
       return;
     }
 
-    const url = `https://fololimo-api.vercel.app/api/v1/model/${whatTofetch}`;
+    const url = `${apiUrl}/model/predict`;
 
     try {
       setLoading(true);
@@ -76,6 +77,7 @@ export default function ImageResults() {
         },
         body: formData,
       });
+      console.log("API Response:", apiResponse);
 
       if (!apiResponse.ok) {
         setError("An error occurred");
@@ -85,6 +87,7 @@ export default function ImageResults() {
       }
 
       const data = await apiResponse.json();
+      console.log("Data:", data);
       if (whatTofetch === "pest") {
         setPestResults(data);
       } else {

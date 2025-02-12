@@ -1,27 +1,66 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useContext } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Modal,
+  Alert,
+} from "react-native";
+import React, { useContext, useState } from "react";
 import Markdown from "react-native-markdown-display";
-import { CropInfo } from "@/constants/Types";
+import { AnimalDiseaseInfo, Vet } from "@/constants/types";
 import { Colors } from "@/constants/Colors";
 import { ThemeContext } from "@/contexts/ThemeContext";
+import { AuthContext } from "@/contexts/AuthContext";
+import { apiUrl } from "@/constants/api";
 
-export default function DiseaseResult(results: CropInfo) {
-  const themeContext = useContext(ThemeContext); // Access the theme context
-  const isDarkMode = themeContext?.isDarkMode || false; // Get current theme
-  const themeColors = isDarkMode ? Colors.dark : Colors.light; // Use theme colors based on mode
+export default function DiseaseResult(results: AnimalDiseaseInfo) {
+  const themeContext = useContext(ThemeContext);
+  const isDarkMode = themeContext?.isDarkMode || false;
+  const themeColors = isDarkMode ? Colors.dark : Colors.light;
 
-  // Define markdown styles based on the theme
+  const [selectedVet, setSelectedVet] = useState<Vet | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const authContext = useContext(AuthContext);
+
+  if (!authContext) {
+    throw new Error("AuthContext,  must be used within their providers");
+  }
+
+  const { userToken } = authContext;
+
   const markdownStyles = {
-    body: {
-      color: themeColors.text,
-    },
-    heading1: {
-      color: themeColors.tint,
-    },
-    heading2: {
-      color: themeColors.tint,
-    },
-    // You can add more specific styles for other Markdown elements here
+    body: { color: themeColors.text },
+    heading1: { color: themeColors.tint },
+    heading2: { color: themeColors.tint },
+  };
+
+  const handleContactVet = async (vet: Vet, results: AnimalDiseaseInfo) => {
+    try {
+      const response = await fetch(`${apiUrl}/user/select-vet`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify({
+          vetId: vet._id,
+          animal: results.animal,
+          disease: results.disease,
+          image_url: results.image_url,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log(data);
+        Alert.alert("Vet Notified", "Vet has been notified of your request");
+        setModalVisible(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -29,200 +68,105 @@ export default function DiseaseResult(results: CropInfo) {
       <View
         style={[styles.majorInfo, { backgroundColor: themeColors.background }]}
       >
-        {results.crop ? (
-          <Text style={styles.majorInfoText}>Crop: {results.crop}</Text>
-        ) : (
-          <Text style={styles.majorInfoText}>Crop data not available</Text>
-        )}
-
-        {results.disease ? (
-          <Text style={styles.majorInfoText}>Disease: {results.disease}</Text>
-        ) : (
-          <Text style={styles.majorInfoText}>No disease detected</Text>
-        )}
+        <Text style={[styles.majorInfoText, { color: themeColors.text }]}>
+          Animal: {results.animal}
+        </Text>
+        <Text style={[styles.majorInfoText, { color: themeColors.text }]}>
+          Disease: {results.disease}
+        </Text>
       </View>
+      {/* 
+      {results.image_url && (
+        <Image source={{ uri: results.image_url }} style={styles.image} />
+      )} */}
 
-      <View>
-        {results.other_crops_infested?.length ? (
-          <View>
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Other Crops Infested
-            </Text>
-            {results.other_crops_infested.map((crop, index) => (
-              <Text key={index} style={{ color: themeColors.text }}>
-                {index + 1}. {"\t"}
-                {crop}
+      {(["symptoms", "cause", "preventive_measures", "remedy"] as const).map(
+        (key) =>
+          Array.isArray(results[key]) &&
+          results[key].length > 0 && (
+            <View key={key} style={styles.resultsContainer}>
+              <Text
+                style={[styles.resultsSubHeading, { color: themeColors.tint }]}
+              >
+                {key.replace("_", " ").toUpperCase()}
               </Text>
-            ))}
-          </View>
-        ) : (
-          <Text style={{ color: themeColors.text }}>
-            No other crops infested
+              {(results[key] as string[]).map((item, index) => (
+                <Markdown key={index} style={markdownStyles}>
+                  {item}
+                </Markdown>
+              ))}
+            </View>
+          )
+      )}
+
+      {results.nearbyVets.length > 0 && (
+        <View style={styles.resultsContainer}>
+          <Text style={[styles.resultsSubHeading, { color: themeColors.tint }]}>
+            Chose A Nearby Vet to contact
           </Text>
-        )}
+          {results.nearbyVets.map((vet, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.vetItem, { backgroundColor: themeColors.cardBg }]}
+              onPress={() => {
+                setSelectedVet(vet);
+                setModalVisible(true);
+              }}
+            >
+              <Text style={{ color: themeColors.text }}>{vet.username}</Text>
+              <Text style={{ color: themeColors.text }}>
+                {vet.phone_number}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
-        {results.cause?.length ? (
+      <Modal visible={modalVisible} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
           <View
             style={[
-              styles.resultsContainer,
+              styles.modalContent,
               { backgroundColor: themeColors.background },
             ]}
           >
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Causes
-            </Text>
-            {results.cause.map((cause, index) => (
-              <Markdown key={index} style={markdownStyles}>
-                {cause}
-              </Markdown>
-            ))}
+            {selectedVet && (
+              <>
+                <Text style={[styles.modalTitle, { color: themeColors.tint }]}>
+                  {selectedVet.username}
+                </Text>
+                <Text style={{ color: themeColors.text }}>
+                  Phone: {selectedVet.phone_number}
+                </Text>
+                <Text style={{ color: themeColors.text }}>
+                  Email: {selectedVet.email}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    gap: 10,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => handleContactVet(selectedVet, results)}
+                    style={{ ...styles.closeButton, backgroundColor: "green" }}
+                  >
+                    <Text style={{ color: "white" }}>Notify Vet</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setModalVisible(false)}
+                    style={styles.closeButton}
+                  >
+                    <Text style={{ color: "white" }}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
           </View>
-        ) : null}
-
-        {results.life_cycle?.length ? (
-          <View
-            style={[
-              styles.resultsContainer,
-              { backgroundColor: themeColors.background },
-            ]}
-          >
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Life Cycle
-            </Text>
-            {results.life_cycle.map((lifeCycle, index) => (
-              <Markdown key={index} style={markdownStyles}>
-                {lifeCycle}
-              </Markdown>
-            ))}
-          </View>
-        ) : null}
-
-        {results.remedy?.length ? (
-          <View
-            style={[
-              styles.resultsContainer,
-              { backgroundColor: themeColors.background },
-            ]}
-          >
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Remedy
-            </Text>
-            {results.remedy.map((remedy, index) => (
-              <Markdown key={index} style={markdownStyles}>
-                {remedy}
-              </Markdown>
-            ))}
-          </View>
-        ) : null}
-
-        {results.preventive_measures?.length ? (
-          <View
-            style={[
-              styles.resultsContainer,
-              { backgroundColor: themeColors.background },
-            ]}
-          >
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Preventive Measures
-            </Text>
-            {results.preventive_measures.map((measure, index) => (
-              <Markdown key={index} style={markdownStyles}>
-                {measure}
-              </Markdown>
-            ))}
-          </View>
-        ) : null}
-
-        {results.environment_conditions?.length ? (
-          <View
-            style={[
-              styles.resultsContainer,
-              { backgroundColor: themeColors.background },
-            ]}
-          >
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Environment Conditions
-            </Text>
-            {results.environment_conditions.map((condition, index) => (
-              <Markdown key={index} style={markdownStyles}>
-                {condition}
-              </Markdown>
-            ))}
-          </View>
-        ) : null}
-
-        {results.nutrient_deficiency?.length ? (
-          <View
-            style={[
-              styles.resultsContainer,
-              { backgroundColor: themeColors.background },
-            ]}
-          >
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Nutrient Deficiency
-            </Text>
-            {results.nutrient_deficiency.map((deficiency, index) => (
-              <Markdown key={index} style={markdownStyles}>
-                {deficiency}
-              </Markdown>
-            ))}
-          </View>
-        ) : null}
-
-        {results.companion_planting?.length ? (
-          <View
-            style={[
-              styles.resultsContainer,
-              { backgroundColor: themeColors.background },
-            ]}
-          >
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Companion Planting
-            </Text>
-            {results.companion_planting.map((plant, index) => (
-              <Markdown key={index} style={markdownStyles}>
-                {plant}
-              </Markdown>
-            ))}
-          </View>
-        ) : null}
-
-        {results.post_harvest_handling?.length ? (
-          <View
-            style={[
-              styles.resultsContainer,
-              { backgroundColor: themeColors.background },
-            ]}
-          >
-            <Text
-              style={[styles.resultsSubHeading, { color: themeColors.tint }]}
-            >
-              Post Harvest Handling
-            </Text>
-            {results.post_harvest_handling.map((handling, index) => (
-              <Markdown key={index} style={markdownStyles}>
-                {handling}
-              </Markdown>
-            ))}
-          </View>
-        ) : null}
-      </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -237,19 +181,53 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   majorInfoText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: Colors.light.tabIconSelected, // Remain static
-  },
-  resultsSubHeading: {
     fontSize: 16,
-    fontWeight: "semibold",
-    textDecorationLine: "underline",
+    fontWeight: "bold",
   },
   resultsContainer: {
+    marginVertical: 10,
     padding: 10,
     borderRadius: 10,
-    marginTop: 10,
-    flexDirection: "column",
+  },
+  resultsSubHeading: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  vetItem: {
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: "red",
   },
 });

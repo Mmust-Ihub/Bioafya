@@ -14,9 +14,8 @@ interface AuthContextType {
     email: string,
     username: string,
     phoneNumber: string,
-    password1: string,
-    password2: string,
-    location: LocationObject,
+    password: string,
+    location: LocationObject
     // pushToken: string
   ) => Promise<void>;
 }
@@ -36,7 +35,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const loadToken = async () => {
       try {
-        const token = await SecureStore.getItemAsync("Token");
+        const token = await SecureStore.getItemAsync("biotoken");
 
         if (token) {
           setIsLoading(false);
@@ -59,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     try {
       // Call your authentication API here to get the token
-      const response = await fetch(`${apiUrl}/auth/login`, {
+      const response = await fetch(`${apiUrl}/user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log(data?.access_token);
         // const token = data.key; // Assuming  API returns the token in this format
 
-        await SecureStore.setItemAsync("Token", data?.access_token);
+        await SecureStore.setItemAsync("biotoken", data?.access_token);
         setUserToken(data?.access_token);
 
         router.replace("/(tabs)");
@@ -118,16 +117,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     email: string,
     username: string,
     phoneNumber: string,
-    password1: string,
-    password2: string,
-    location: LocationObject,
+    password: string,
+    location: LocationObject
     // pushToken: string
   ) => {
     setIsLoading(true);
 
     try {
       // Call your authentication API here to get the token
-      const response = await fetch(`${apiUrl}/auth/register`, {
+      const response = await fetch(`${apiUrl}/user/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,16 +133,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify({
           username: username,
           email: email,
-          phoneNumber: phoneNumber,
-          password: password1,
-          confirm_password: password2,
+          phone_number: phoneNumber,
+          password: password,
           location: location,
-          // expoPushToken: pushToken,
         }), // Send username and password
       });
-
+      console.log("response", response);
       if (!response.ok) {
         const data = await response.json();
+        console.log("data", data);
         console.log(data?.message);
         setIsLoading(false);
         Alert.alert("Registration failed: " + data?.message);

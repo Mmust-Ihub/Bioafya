@@ -20,8 +20,8 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { ThemeContext } from "@/contexts/ThemeContext"; // For theme management
 import { Colors } from "@/constants/Colors"; // Custom colors based on themes
 import { useLocation } from "@/hooks/useLocation";
-import { LocationObject } from "@/constants/types";
-import { usePushNotificationToken } from "@/hooks/useExpoPushToken";
+import { LocationObject as LocationObjectType } from "@/constants/types";
+// import { usePushNotificationToken } from "@/hooks/useExpoPushToken";
 import { StatusBar } from "expo-status-bar";
 
 export default function register() {
@@ -49,9 +49,11 @@ export default function register() {
   const { register, isLoading } = authContext;
   const { isDarkMode } = themeContext;
 
-  const LocationObject: LocationObject = {
-    latitude: location?.coords.latitude ?? 0,
-    longitude: location?.coords.longitude ?? 0,
+  const LocationObject: LocationObjectType = {
+    coordinates: [
+      location?.coords?.longitude?.toString() ?? "0",
+      location?.coords?.latitude?.toString() ?? "0",
+    ],
   };
   // if (error || errorMsg) {
   //   Alert.alert("Error", error ?? errorMsg ?? "Unknown error");
@@ -101,8 +103,7 @@ export default function register() {
       username,
       phoneNumber,
       password,
-      confirmPassword,
-      LocationObject,
+      LocationObject
       // pushToken!
     );
   };

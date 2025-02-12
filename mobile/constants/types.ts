@@ -1,6 +1,5 @@
 export type LocationObject = {
-  latitude: number;
-  longitude: number;
+  coordinates: [string, string]; // [longitude, latitude]
 };
 
 export type CropInfo = {
@@ -49,50 +48,27 @@ export type ImagePickerResult = {
   canceled: boolean;
 };
 
-// Type for Fertilizer Map
-interface Fertilizer {
-  nitrogen: string;
-  phosphorus: string;
-  potassium: string;
-}
+export type Vet = {
+  email: string;
+  phone_number: string;
+  username: string;
+  _id: string;
+};
 
-// Type for Recommendations Map
-interface Recommendations {
-  fertilizer: Fertilizer;
-  irrigation: string;
-  pH_adjustment: string;
-}
-
-// Type for Crop Map
-export interface Crop {
-  crop_name: string;
-  expected_yield_per_hectare: string;
-  recommendations: Recommendations;
-  suitability_score: number;
-}
-interface NPK {
-  Nitrogen: number;
-  Phosphorus: number;
-  Potassium: number;
-}
-interface soil_data {
-  Moisture: number;
-  pH: number;
-  NPK: NPK;
-}
-
-// Type for Crops for 3 Months (Array of Crops)
-export interface CropsFor3Months extends Array<Crop> {}
-
-// Type for Crops for 6 Months (Array of Crops)
-export interface CropsFor6Months extends Array<Crop> {}
-
-// Main Farm Data Structure
-export interface FarmData {
-  crops_for_3_months: CropsFor3Months;
-  crops_for_6_months: CropsFor6Months;
-  farm_id: number;
-  user_id: number;
-  soil_data?: soil_data;
-}
-
+export type AnimalDiseaseInfo = {
+  animal: string;
+  biosecurity_measures: string[]; // Array of biosecurity measures
+  cause: string[]; // List of causes (e.g., viruses)
+  disease: string; // Disease name
+  environmental_conditions: string[]; // List of environmental conditions
+  image_url: string; // URL to the image
+  nearbyVets: Vet[]; // Array of nearby vets
+  nutritional_deficiency: string[]; // Any nutritional deficiencies observed
+  other_animals_affected: string[]; // List of other animals affected
+  post_infection_management: string[]; // Post-infection management measures
+  preventive_measures: string[]; // List of preventive measures
+  remedy: string[]; // Remedies or treatments
+  symptoms: string[]; // List of symptoms
+  transmission: string[]; // Transmission modes
+  user_id: string; // User ID who reported the case
+};
