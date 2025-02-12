@@ -153,7 +153,7 @@ export default function DiseaseResult(results: AnimalDiseaseInfo) {
                     onPress={() => handleContactVet(selectedVet, results)}
                     style={{ ...styles.closeButton, backgroundColor: "green" }}
                   >
-                    <Text style={{ color: "white" }}>Notify Vet</Text>
+                    <Text style={{ color: "white" }}>Request Checkup</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => setModalVisible(false)}
