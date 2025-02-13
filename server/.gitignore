@@ -4,6 +4,7 @@
 ### Node ###
 # Logs
 test.js
+bioafya.json
 start.sh
 logs
 *.log

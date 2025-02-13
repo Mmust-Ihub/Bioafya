@@ -16,7 +16,7 @@ const geoSchema = mongoose.Schema({
   },
 });
 
-const agrovetSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -46,10 +46,6 @@ const agrovetSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
-    subscribed: {
-      type: Boolean,
-      default: false,
-    },
     location: {
       type: geoSchema,
       required: true,
@@ -63,22 +59,22 @@ const agrovetSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-agrovetSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
   return !!user;
 };
 
-agrovetSchema.statics.isNumberTaken = async function (phone_number, excludeUserId) {
+userSchema.statics.isNumberTaken = async function (phone_number, excludeUserId) {
   const user = await this.findOne({phone_number, _id: { $ne: excludeUserId } });
   return !!user;
 };
 
-agrovetSchema.methods.isPasswordMatch = async function (password) {
+userSchema.methods.isPasswordMatch = async function (password) {
   const user = this;
   return bcrypt.compare(password, user.password);
 };
 
-agrovetSchema.pre('save', async function (next) {
+userSchema.pre('save', async function (next) {
   const user = this;
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
@@ -86,5 +82,5 @@ agrovetSchema.pre('save', async function (next) {
   next();
 });
 
-const agrovetModel = mongoose.model("Agrovet", agrovetSchema)
-export default agrovetModel;
+const userModel = mongoose.model("User", userSchema)
+export default userModel;
