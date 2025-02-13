@@ -1,0 +1,111 @@
+/* body{
+    background: #000;
+} */
+/* .img-home{
+    height: 300px;
+    width: 550px;
+    margin-left: -50px;
+    margin-top: 50px;
+} */
+.img-fluid{
+    height: 250px;
+    width: 250px;
+    margin-left: -00px;
+    margin-top: -550px;
+    /* margin-bottom: -200px; */
+}
+#login{
+    height: 630px;
+    /* width: 100vh; */
+}
+
+.img-logo{
+    height: 250px;
+    width: 250px;
+    margin-left: 00px;
+    margin-top: -530px;
+}
+.img-user{
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+}
+.img-vet{
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    margin-top: -40px;
+    margin-left: 1250px;
+    /* margin-bottom: 300px; */
+}
+.home2{
+    width: 500px;
+    height: 500px;
+    margin-top: 100px;
+    margin-left: -90px;
+}
+.img-home3{
+    margin-left: -300px;
+    margin-top: 100px;
+}
+
+.img-dash{
+    height: 250px;
+    width: 250px;
+    margin-left: -40px;
+    margin-top: -390px; 
+    margin-bottom: -400px;
+}
+
+#subscribe{
+    margin-top: 20px;
+}
+#subs{
+    margin-top: 20px;
+}
+#whole{
+    margin-top: 200px;
+}
+.logout{
+    margin-left: 1150px;
+    margin-top: -20px;
+}
+
+@media only screen and (max-width:800px){
+    .img-logo{
+        height: 250px;
+        width: 250px;
+        margin-left: -10px;
+        margin-top: -550px;
+    }
+    .home2{
+        height: 400px;
+        width: 400px;
+        margin-left: -250px;
+        margin-top: 0px;
+    }
+    #whole{
+        margin-left: -0px;
+        margin-top: -100px;
+    }
+    .img-home3{
+        display: none;
+        height: 320px;
+        width: 320px;
+        margin-left: -50px;
+        margin-top: 120px;
+
+    }
+    .img-fluid{
+        height: 400px;
+        width: 400px;
+        margin-left: -100px;
+        margin-top: -170px;
+        margin-bottom: 50px;
+    }
+    #sign{
+        margin-left: -0px;
+        margin-top: -70px;
+    }
+}
+    
