@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   actionButton: {
-    backgroundColor: "#007AFF",
+  backgroundColor: "#4CD964",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
