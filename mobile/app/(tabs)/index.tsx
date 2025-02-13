@@ -24,18 +24,50 @@ import { apiUrl } from "@/constants/api";
 import { Alert } from "react-native";
 import { useUserContext } from "@/contexts/userContext";
 
-const mockAnimals = [
-  { id: "1", name: "Cow A", temperature: "38", heartRate: "72" },
-  { id: "2", name: "Sheep B", temperature: "39", heartRate: "80" },
-  { id: "3", name: "Goat C", temperature: "37.5", heartRate: "78" },
-];
-
 function HomeScreen() {
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [livestockName, setLivestockName] = useState("");
   const [cattleNumber, setCattleNumber] = useState("");
-  const [livestocks, setLivestocks] = useState([]);
+  const [livestocks, setLivestocks] = useState<
+    {
+      __v: number;
+      _id: string;
+      name: string;
+      number: number;
+      updatedAt: string;
+      createdAt: string;
+      farmerId?: string;
+    }[]
+  >([
+    {
+      __v: 0,
+      _id: "67ad39a15c79535211835345",
+      createdAt: "2025-02-13T00:15:29.183Z",
+      farmerId: "67ac72d9e099051dc5a573c1",
+      name: "Makau",
+      number: 5001,
+      updatedAt: "2025-02-13T00:15:29.183Z",
+    },
+    {
+      __v: 0,
+      _id: "67ac72d9e099051dc5a573c1",
+      createdAt: "2025-02-13T00:16:13.716Z",
+      farmerId: "67ac72d9e099051dc5a573c1",
+      name: "Freshian",
+      number: 2024,
+      updatedAt: "2025-02-13T00:16:13.716Z",
+    },
+    {
+      __v: 0,
+      _id: "67ade9d8ef94feb8566aec68",
+      createdAt: "2025-02-13T12:47:20.701Z",
+      farmerId: "67ac72d9e099051dc5a573c1",
+      name: "Mwangi",
+      number: 888,
+      updatedAt: "2025-02-13T12:47:20.701Z",
+    },
+  ]);
 
   const authContext = useContext(AuthContext);
   const themeContext = useContext(ThemeContext);
@@ -44,7 +76,8 @@ function HomeScreen() {
   const isDarkMode = themeContext?.isDarkMode || false;
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
   const router = useRouter();
-  console.log("user", userContext);
+  const farmerId = userContext.userProfile?._id || "67ac72d9e099051dc5a573c1";
+  console.log(farmerId);
 
   useEffect(() => {
     const handleNetworkChange = (state: { isConnected: boolean | null }) => {
@@ -65,12 +98,12 @@ function HomeScreen() {
       if (response.ok) {
         const data = await response.json();
         setLivestocks(data);
-        console.log(data);
       }
     } catch (error) {
       console.error(error);
     }
   };
+  console.log(livestocks);
 
   const handleAddLivestock = async () => {
     Keyboard.dismiss();
@@ -97,7 +130,8 @@ function HomeScreen() {
       console.log("res", response);
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+
+        setLivestocks([...livestocks, data]);
         Alert.alert("Livestock Added", "Livestock has been added successfully");
       }
     } catch (error) {
@@ -137,21 +171,28 @@ function HomeScreen() {
 
       {/* List of Animals */}
       <FlatList
-        data={mockAnimals}
-        keyExtractor={(item) => item.id}
+        data={livestocks}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <Link
             style={styles.animalCard}
             //  route to animal page and send item on animal/:id page
             href={{
               pathname: `/animal/[id]`,
-              params: { id: item.id, animal: JSON.stringify(item) },
+              params: {
+                id: item._id,
+                animal: JSON.stringify(item),
+                farmerId: farmerId,
+                name: item.name,
+              },
             }}
           >
             <View>
               <Text style={styles.animalName}>{item.name}</Text>
-              <Text>Temperature: {item.temperature} °C</Text>
-              <Text>Heart Rate: {item.heartRate} bpm</Text>
+              <Text>
+                Number:{" "}
+                <Text style={{ fontWeight: "bold" }}>{item.number}</Text>
+              </Text>
             </View>
           </Link>
         )}
@@ -246,7 +287,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  title: { fontSize: 22, fontWeight: "bold",marginBottom: 10 },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
   section: { marginVertical: 15 },
   sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   animalCard: {
@@ -295,3 +336,6 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
+// [{"__v": 0, "_id": "67ad39a15c79535211835345", "createdAt": "2025-02-13T00:5a573c1", "name": "Makau", "number": 5001, "updatedAt": "2025-02-13T00:15:29.183Z"}, {"__v":atedAt": "2025-02-13T00:16:13.716Z", "farmerId": "67ac72d9e099051dc5a573c1", "name": "Freshi13T00:16:13.716Z"}, {"__v": 0, "_id": "67ade9d8ef94feb8566aec68", "createdAt": "2025-02-13T1dc5a573c1", "name": "Mwangi", "number": 888, "updatedAt": "2025-02-13T12:47:20.701Z"}]
+// 73c1", "name": "Freshian", "number": 2024, "updatedAt": "2025-02-13T00:16:13.716Z"}, {"__v": 0, "_id": "67ade9d8ef94feb8566aec68", "createdAt": "2025-02-13T12:47:20.701Z", "farmerId": "67ac72d9e099051dc5a573c1", "name": "Mwangi", "number": 888, "updatedAt": "2025-02-13T12:47:20.701Z"}]
