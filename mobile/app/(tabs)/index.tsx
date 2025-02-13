@@ -12,7 +12,7 @@ import {
   TextInput,
   Keyboard,
 } from "react-native";
-import { Ionicons, Entypo } from "@expo/vector-icons";
+import { Ionicons, Entypo, FontAwesome6 } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { ThemeContext } from "@/contexts/ThemeContext";
 import { Colors } from "@/constants/Colors";
@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { apiUrl } from "@/constants/api";
 import { Alert } from "react-native";
+import { useUserContext } from "@/contexts/userContext";
 
 const mockAnimals = [
   { id: "1", name: "Cow A", temperature: "38", heartRate: "72" },
@@ -34,20 +35,43 @@ function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [livestockName, setLivestockName] = useState("");
   const [cattleNumber, setCattleNumber] = useState("");
+  const [livestocks, setLivestocks] = useState([]);
 
   const authContext = useContext(AuthContext);
   const themeContext = useContext(ThemeContext);
+  const userContext = useUserContext();
+
   const isDarkMode = themeContext?.isDarkMode || false;
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
   const router = useRouter();
-  
+  console.log("user", userContext);
+
   useEffect(() => {
     const handleNetworkChange = (state: { isConnected: boolean | null }) => {
       setIsConnected(state.isConnected);
+      getAllLivestock();
     };
     const unsubscribe = NetInfo.addEventListener(handleNetworkChange);
     return () => unsubscribe();
   }, []);
+
+  const getAllLivestock = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/livestock`, {
+        headers: {
+          Authorization: `Bearer ${authContext?.userToken}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setLivestocks(data);
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleAddLivestock = async () => {
     Keyboard.dismiss();
     if (!livestockName || !cattleNumber) {
@@ -107,7 +131,7 @@ function HomeScreen() {
       </View>
       <View style={styles.header}>
         <Text style={[styles.title, { color: themeColors.text }]}>
-          Welcome, {authContext?.user?.name}
+          Hello 👋, {userContext.userProfile?.username}
         </Text>
       </View>
 
@@ -150,10 +174,22 @@ function HomeScreen() {
             <Ionicons name="add-circle-outline" size={22} color="white" />
             <Text style={styles.actionText}>Add Livestock</Text>
           </Pressable>
-          <Pressable style={styles.actionButton}>
-            <Entypo name="bar-graph" size={22} color="white" />
-            <Text style={styles.actionText}>View Reports</Text>
-          </Pressable>
+          <Link
+            style={styles.actionButton}
+            href={{
+              pathname: "/(tabs)/animal/livestocks",
+              params: { animal: JSON.stringify(livestocks) },
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome6 name="cow" size={22} color="white" />
+              <Text style={styles.actionText}>View Livestock</Text>
+            </View>
+          </Link>
         </View>
       </View>
       {/* Add Livestock Modal */}
@@ -210,7 +246,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  title: { fontSize: 22, fontWeight: "bold" },
+  title: { fontSize: 22, fontWeight: "bold",marginBottom: 10 },
   section: { marginVertical: 15 },
   sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   animalCard: {
@@ -228,6 +264,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     marginHorizontal: 5,
+    flexDirection: "column",
+    fontWeight: "heavy",
   },
   actionText: { color: "white", marginTop: 5, fontSize: 12, fontWeight: "900" },
   modalContainer: {

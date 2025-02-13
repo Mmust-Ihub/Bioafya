@@ -23,10 +23,7 @@ export interface UserProfile {
   username: string;
   email: string;
   imageUrl: { url: string };
-  phoneNumber: string;
-  listings: any[];
-  messages: any[];
-  expoPushToken: string;
+  phone_number: string;
 }
 
 function Account() {
