@@ -1,6 +1,6 @@
 import { catchAsync } from "../utils/catchAsync.js";
 import httpStatus from "http-status";
-import utils from "./utils.js";
+import utils from "./agrovet.utils.js";
 import { ApiError } from "../utils/APiError.js";
 import agrovetModel from "./agrovet.model.js";
 import jwt from "../../helpers/jwt.js";
@@ -8,12 +8,10 @@ import mpesa from "../mpesa/mpesa.js";
 
 const registerAgrovet = catchAsync(async (req, res, next) => {
   const userBody = req.body;
-  const regex = /^\+\d{1,3}\d{3,}$/;
+  console.log(userBody)
   const result = utils.registerSchema.validate(userBody);
   if (result.error) {
     throw new ApiError(400, result.error.details[0].message);
-  } else if (!regex.test(userBody.phone_number)) {
-    throw new ApiError(400, "Invalid phone number..");
   }
   if (await agrovetModel.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "email is already taken ...");
@@ -38,7 +36,7 @@ const subscribeAgrovet = catchAsync(async (req, res, next) => {
     }
     const user = await agrovetModel.findOne({ phone_number });
     if (!user) {
-      throw new ApiError(401, "Phone number not registerd");
+      throw new ApiError(401, "Phone number not registered");
     }
     await mpesa.initiateStkPush(phone_number)
     await agrovetModel.findOneAndUpdate(
@@ -63,7 +61,7 @@ const loginAgrovet = catchAsync(async (req, res, next) => {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid email or password");
   }
   if (!user.subscribed) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "please subscribe");
+    throw new ApiError(httpStatus.BAD_REQUEST, "please subscribe");
   }
   const token = await jwt.generateAccessToken({
     email: email,
@@ -72,6 +70,7 @@ const loginAgrovet = catchAsync(async (req, res, next) => {
   return res.status(200).json({
     status: "success",
     access_token: token,
+    vetId: user.id
   });
 });
 
