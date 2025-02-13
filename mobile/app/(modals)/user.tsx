@@ -25,7 +25,7 @@ interface UserProfile {
   username: string;
   email: string;
   imageUrl: { url: string };
-  phoneNumber: string;
+  phone_number: string;
 }
 
 const ProfilePage = () => {
