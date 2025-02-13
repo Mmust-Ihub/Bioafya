@@ -137,12 +137,11 @@ function Login() {
                      
 
                         {/* Buttons */}
-                        <div className="d-flex justify-content-between mt-4">
+                        <div className="justify-content-between mt-4">
                             <button type="submit" className="btn btn-success">Sign In</button>
-                            <Link to="/signup">
-                                <button className="btn btn-secondary text-white">Don't Have An Account?</button>
-                            </Link>
                         </div>
+                        
+
                     </form>:<>
                     <h2>Subscribe First To Login</h2>
                        {/* Subscription Redirect */}
@@ -155,7 +154,17 @@ function Login() {
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                             />
                             <label className="form-label"></label>
-                                <button type="button" id='subscribe' onClick={handleSubscription} className="btn btn-warning"><strong>Subscribe</strong></button>
+                            <button 
+                            type="button" 
+                            id="subscribe" 
+                            onClick={handleSubscription} 
+                            className="btn btn-warning me-3"
+                            >
+                            <strong>Subscribe</strong>
+                            </button>
+                            <Link to="/signup" className="SignUps">
+                            Don't Have An Account?
+                            </Link>
                         </div>
                     </>}
                 </div>
