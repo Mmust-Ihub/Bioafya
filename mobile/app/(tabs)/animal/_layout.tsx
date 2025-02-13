@@ -20,6 +20,7 @@ export default function Modals() {
       }}
     >
       <Stack.Screen name="[id]" options={{ animation: "simple_push" }} />
+      <Stack.Screen name="livestocks" options={{ animation: "simple_push" }} />
     </Stack>
   );
 }

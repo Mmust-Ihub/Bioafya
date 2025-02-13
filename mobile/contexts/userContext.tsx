@@ -108,9 +108,8 @@ export type UserProfile = {
   _id: string;
   username: string;
   email: string;
-  phoneNumber: string;
-  listings: any[];
-  messages: any[];
+  phone_number: string;
+
   // expoPushToken: string;
   createdAt: string;
 };
@@ -147,7 +146,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const data = await response.json();
-      setUserProfile(data.userProfile);
+      console.log("data", data);
+      setUserProfile(data);
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
     } finally {
