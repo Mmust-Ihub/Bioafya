@@ -36,7 +36,7 @@ const verifyAccessToken = catchAsync(async (req, res, next) => {
   if (!token) {
     throw new ApiError(401, "missing authorization token");
   }
-  jwt.verify(token, config.jwt.accessExpirationSeconds, (error, payload) => {
+  jwt.verify(token, config.jwt.secret, (error, payload) => {
     if (error) {
       if (error.name === "JsonWebToken") {
         throw new ApiError(401, "invalid jwt token");

@@ -25,7 +25,7 @@ interface UserProfile {
   username: string;
   email: string;
   imageUrl: { url: string };
-  phoneNumber: string;
+  phone_number: string;
 }
 
 const ProfilePage = () => {
@@ -35,7 +35,7 @@ const ProfilePage = () => {
   const userToken = authContext?.userToken;
   const [username, setUsername] = useState(user?.username);
   const [email, setEmail] = useState(user?.email);
-  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
+  const [phoneNumber, setPhoneNumber] = useState(user?.phone_number);
   const [imageUrl, setImageUrl] = useState(user?.imageUrl);
   const [isLoading, setIsLoading] = useState(false);
 

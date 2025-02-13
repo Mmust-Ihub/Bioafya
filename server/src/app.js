@@ -6,6 +6,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import compression from "compression";
 import xss from "xss-clean";
 import httpStatus from "http-status";
+import multer from "multer"
 import config from "./config/config.js";
 import morgan from "./config/morgan.js";
 import router from "./routes/v1/index.js";
@@ -13,6 +14,7 @@ import { ApiError } from "./modules/utils/APiError.js";
 import { errorConverter, errorHandler } from "./middleware/error.js";
 
 const app = express();
+const upload = multer()
 
 if (config.env !== "test") {
   app.use(morgan.successHandler);
@@ -28,6 +30,7 @@ app.options("*", cors());
 app.use(xss());
 app.use(mongoSanitize());
 app.use(compression());
+app.use(upload.any())
 
 app.use("/api/v1", router);
 
